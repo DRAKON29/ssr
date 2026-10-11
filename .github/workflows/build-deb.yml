@@ -9,29 +9,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Ключевое отличие: сборка идёт внутри Debian 10 (Buster),
-    # на базе которого построена Astra Linux "Смоленск"
     container: debian:buster
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-            
+
       - name: Switch to Debian archive repositories
         run: |
           sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list
           sed -i 's/security.debian.org/archive.debian.org/g' /etc/apt/sources.list
           sed -i '/buster-updates/d' /etc/apt/sources.list
           sed -i '/buster\/updates/d' /etc/apt/sources.list
-      
+
       - name: Install build dependencies
         run: |
-          apt-get update
+          apt-get update --allow-releaseinfo-change
           apt-get install -y \
             build-essential debhelper dpkg-dev cmake pkg-config \
             qtbase5-dev qttools5-dev qttools5-dev-tools libqt5x11extras5-dev \
             libavformat-dev libavcodec-dev libavutil-dev libswscale-dev \
-            libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev \
+            libasound2-dev libpulse-dev libpipewire-0.3-dev libgl1-mesa-dev libglu1-mesa-dev \
             libx11-dev libxext-dev libxfixes-dev libxi-dev libxinerama-dev \
             libv4l-dev libjack-jackd2-dev \
             appstream libappstream-dev
