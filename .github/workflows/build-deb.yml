@@ -1,4 +1,4 @@
-name: Build DEB Package
+name: Build DEB Package 0.4.4.8
 
 on:
   workflow_dispatch:
