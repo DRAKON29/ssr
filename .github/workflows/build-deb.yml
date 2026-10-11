@@ -29,10 +29,17 @@ jobs:
       - name: Remove non-Linux build dependency
         run: |
           sed -i 's/, liboss4-salsa-dev \[!linux-any\]//' debian/control
+      
+      - name: Force xz compression
+        run: |
+          # Добавляем в debian/rules правило, требующее использовать xz вместо zstd
+          echo "" >> debian/rules
+          echo "override_dh_builddeb:" >> debian/rules
+          echo "	dh_builddeb -- -Zxz" >> debian/rules
 
       - name: Build Debian package
         run: |
-          dpkg-buildpackage -us -uc -b -d
+           dpkg-buildpackage -us -uc -b -d -Zxz
 
       - name: Move DEB files into workspace
         run: |
