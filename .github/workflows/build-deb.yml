@@ -45,6 +45,8 @@ jobs:
       - name: Build Debian package
         run: |
           dpkg-buildpackage -us -uc -b -d -Zxz
+        env:
+          DEB_CMAKE_EXTRA_FLAGS: "-DWITH_PIPEWIRE=FALSE"
 
       - name: Move DEB files into workspace
         run: |
