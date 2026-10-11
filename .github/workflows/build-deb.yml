@@ -1,4 +1,4 @@
-name: Build DEB Package 0.4.4.8
+name: Build DEB Package for Astra Linux
 
 on:
   workflow_dispatch:
@@ -8,7 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    # Ключевое отличие: сборка идёт внутри Debian 10 (Buster),
+    # на базе которого построена Astra Linux "Смоленск"
+    container: debian:buster
 
     steps:
       - name: Checkout code
@@ -16,12 +19,12 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          apt-get update
+          apt-get install -y \
             build-essential debhelper dpkg-dev cmake pkg-config \
             qtbase5-dev qttools5-dev qttools5-dev-tools libqt5x11extras5-dev \
             libavformat-dev libavcodec-dev libavutil-dev libswscale-dev \
-            libasound2-dev libpulse-dev libpipewire-0.3-dev libgl1-mesa-dev libglu1-mesa-dev \
+            libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev \
             libx11-dev libxext-dev libxfixes-dev libxi-dev libxinerama-dev \
             libv4l-dev libjack-jackd2-dev \
             appstream libappstream-dev
@@ -29,17 +32,10 @@ jobs:
       - name: Remove non-Linux build dependency
         run: |
           sed -i 's/, liboss4-salsa-dev \[!linux-any\]//' debian/control
-      
-      - name: Force xz compression
-        run: |
-          # Добавляем в debian/rules правило, требующее использовать xz вместо zstd
-          echo "" >> debian/rules
-          echo "override_dh_builddeb:" >> debian/rules
-          echo "	dh_builddeb -- -Zxz" >> debian/rules
 
       - name: Build Debian package
         run: |
-           dpkg-buildpackage -us -uc -b -d -Zxz
+          dpkg-buildpackage -us -uc -b -d -Zxz
 
       - name: Move DEB files into workspace
         run: |
@@ -49,5 +45,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: simplescreenrecorder-deb
+          name: simplescreenrecorder-deb-astra
           path: deb-output/*.deb
