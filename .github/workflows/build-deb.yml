@@ -18,17 +18,16 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            build-essential debhelper dpkg-dev cmake pkg-config \
-            qtbase5-dev qttools5-dev-tools libqt5x11extras5-dev \
+            build-essential debhelper dpkg-dev cmake pkg-config pkgconf \
+            qtbase5-dev qttools5-dev qttools5-dev-tools libqt5x11extras5-dev \
             libavformat-dev libavcodec-dev libavutil-dev libswscale-dev \
             libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev \
             libx11-dev libxext-dev libxfixes-dev libxi-dev libxinerama-dev \
             libv4l-dev libjack-jackd2-dev \
-            libappstream-dev
+            appstream libappstream-dev
 
       - name: Remove non-Linux build dependency
         run: |
-          # Удаляем liboss4-salsa-dev из списка зависимостей, так как она не нужна в Linux
           sed -i 's/, liboss4-salsa-dev \[!linux-any\]//' debian/control
 
       - name: Build Debian package
