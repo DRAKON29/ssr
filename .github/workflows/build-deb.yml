@@ -17,13 +17,10 @@ jobs:
 
       - name: Configure Debian archive repositories
         run: |
-          # Полностью перезаписываем sources.list на архивные репозитории
           cat > /etc/apt/sources.list <<'EOF'
           deb http://archive.debian.org/debian/ buster main contrib non-free
           deb http://archive.debian.org/debian-security buster/updates main contrib non-free
           EOF
-
-          # Отключаем проверку срока действия репозитория
           echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 
       - name: Install build dependencies
@@ -42,11 +39,15 @@ jobs:
         run: |
           sed -i 's/, liboss4-salsa-dev \[!linux-any\]//' debian/control
 
+      - name: Patch debian/rules to disable PipeWire
+        run: |
+          sed -i 's/-DWITH_QT5=TRUE/-DWITH_QT5=TRUE -DWITH_PIPEWIRE=FALSE/' debian/rules
+          echo "--- Проверка патча ---"
+          grep -A3 "dh_auto_configure" debian/rules
+
       - name: Build Debian package
         run: |
           dpkg-buildpackage -us -uc -b -d -Zxz
-        env:
-          DEB_CMAKE_EXTRA_FLAGS: "-DWITH_PIPEWIRE=FALSE"
 
       - name: Move DEB files into workspace
         run: |
