@@ -1,0 +1,26 @@
+From cc48dac1147f9c7f61969f7bf7db0bb6927e69b6 Mon Sep 17 00:00:00 2001
+From: Nathaniel Work-Dembowski
+ <104649815+BlastBlaster17@users.noreply.github.com>
+Date: Tue, 10 Jun 2025 15:21:47 -0400
+Subject: Changed min version to 3.5
+
+Changed both the minimum requirement version and policy version to 3.5 since compatibility with 3.1 has been dropped.
+---
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ec41ef9..ac54ffa 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,5 +1,5 @@
+-cmake_minimum_required(VERSION 3.1)
+-cmake_policy(VERSION 3.1)
++cmake_minimum_required(VERSION 3.5)
++cmake_policy(VERSION 3.5)
+ 
+ if(POLICY CMP0072)
+ 	cmake_policy(SET CMP0072 NEW)
+-- 
+2.30.2
+

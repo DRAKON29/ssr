@@ -1,0 +1,417 @@
+simplescreenrecorder (0.4.4-8) unstable; urgency=medium
+
+  * Team upload
+  * Add 1040-ffmpeg-9.patch to fix building with ffmpeg 9 (Closes: #1144025).
+
+ -- Joachim Bauch <fancycode@debian.org>  Fri, 25 Sep 2026 11:13:47 +0200
+
+simplescreenrecorder (0.4.4-7) unstable; urgency=medium
+
+  * Added 1030-ffmpeg-8.patch to fix building with FFmpeg 8 (Closes: #1115053).
+  * Updated Standards-Version from 4.7.0 to 4.7.3.
+  * Compacted Uploaders in d/control.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Fri, 26 Dec 2025 15:29:00 +0100
+
+simplescreenrecorder (0.4.4-6.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Backport upstream fix for FTBFS with CMake 4. (Closes: #1113505)
+
+ -- Adrian Bunk <bunk@debian.org>  Sat, 29 Nov 2025 15:42:02 +0200
+
+simplescreenrecorder (0.4.4-6) unstable; urgency=medium
+
+  * Added 1020-ffmpeg-7.patch to fix more ffmpeg 7 build
+    issues (Closes: #1072451).
+
+ -- Petter Reinholdtsen <pere@debian.org>  Mon, 12 Aug 2024 23:14:21 +0200
+
+simplescreenrecorder (0.4.4-5) unstable; urgency=medium
+
+  * Simplified debian patches for adjusting appstream metadata.
+  * Added new 0020-ffmpeg-7.patch to prepare for ffmpeg 7.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Thu, 23 May 2024 15:50:11 +0200
+
+simplescreenrecorder (0.4.4-4) unstable; urgency=medium
+
+  * Reordered patches according to classfication in README.
+  * Fixed typo in 1020-appstream-metadata-category.patch.
+  * Extended build rule to validate appstream metadata during build.
+  * Renamed build dependencies libgl1-mesa-dev->libgl-dev and
+    pkg-config->pkgconf on lintians request.
+  * Added 0010-plthook.patch from upstream to fix segfault in libssr-glinject.so
+    (Closes: #1040375).
+  * Updated Standards-Version from 4.6.2 to 4.7.0.
+  * Extended Appstream validator step and fix all issues reported.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Tue, 07 May 2024 16:20:28 +0200
+
+simplescreenrecorder (0.4.4-3) unstable; urgency=medium
+
+  * Flagged 2000-appstream-metadata-https.patch as forwarded.
+  * Added 2010-appstream-metadata-category.patch to include categories
+    in appstream metadata.
+  * Renamed 01-private-glinject.patch to 1000-private-glinject.patch,
+    seem Debian only.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Sat, 18 Feb 2023 09:28:40 +0100
+
+simplescreenrecorder (0.4.4-2) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster
+
+  [ Petter Reinholdtsen ]
+  * Updated Standards-Version from 4.6.0 to 4.6.2.
+  * Updated 2000-appstream-metadata-https.patch, adding rating and
+    launcable info.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Fri, 17 Feb 2023 08:22:02 +0100
+
+simplescreenrecorder (0.4.4-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 0.4.4
+  * debian/patches:
+    - Refresh patches
+    - Fix build with ffmpeg 5.0 (Closes: #1004627)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 03 Apr 2022 19:03:23 +0200
+
+simplescreenrecorder (0.4.3-2) unstable; urgency=medium
+
+  * Added qttools5-dev as build depend to fix build problem.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Sat, 11 Sep 2021 17:57:30 +0200
+
+simplescreenrecorder (0.4.3-1) unstable; urgency=medium
+
+  [ Barak A. Pearlmutter ]
+  * Update watch file format version to 4.
+  * New upstream version.
+    - needs libv4l-dev
+  * Bump policy version, no changes required.
+
+  [ Petter Reinholdtsen ]
+  * Updated Standards-Version from 4.5.1 to 4.6.0.
+  * Added d/patches/README suggesting numbering scheme.
+  * Improved appstream metadata based on appstream generator feedback
+
+ -- Petter Reinholdtsen <pere@debian.org>  Thu, 09 Sep 2021 22:59:16 +0200
+
+simplescreenrecorder (0.4.2-2) unstable; urgency=medium
+
+  * Team upload
+
+  [ Barak A. Pearlmutter ]
+  * Merge in Ubuntu PPA features from
+    https://launchpad.net/~maarten-baert/+archive/ubuntu/simplescreenrecorder
+    In particular, break out simplescreenrecorder-lib containing
+    libssr-glinject.so in arch-specific subdir, so the i386 lib can be
+    installed on an amd64 system, allowing 32-bit process injection.
+
+  [ Sebastian Ramacher ]
+  * debian/patches: Refresh patch
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Sep 2020 18:08:46 +0200
+
+simplescreenrecorder (0.4.2-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Wrap long lines in changelog entries: 0.3.10-2, 0.3.6-1.
+  * Bump debhelper from old 10 to 12.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+  [ Barak A. Pearlmutter ]
+  * New upstream version
+  * Forward port patches (install path patch has been upstreamed)
+  * Bump debhelper from old 12 to 13.
+  * Enable hardened build
+  * Bump policy version, no changes required.
+
+  [Ondřej Nový]
+  * Use debhelper-compat instead of debian/compat.
+
+  [Olivier Humbert]
+  * d/control: http->https + remove one empty line.
+  * d/watch: remove one unneeded empty line
+
+  [ Sebastian Ramacher ]
+  * debian/copyright: Document data/simplescreenrecorder.metainfo.xml
+  * debian/control: Add libxinerama-dev to BD
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sun, 23 Aug 2020 16:15:03 +0200
+
+simplescreenrecorder (0.3.11-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ James Cowgill ]
+  * New upstream version 0.3.11.
+    - Fixes FTBFS with FFmpeg 4.0. (Closes: #888347)
+
+  * d/copyright: Remove unused "build-aux/install-sh" paragraph.
+  * d/control: Make build-dependency on qt >= 5.7 explicit.
+  * d/patches: Refresh.
+  * d/simplescreenrecorder.triggers: Remove useless trigger activation.
+
+  [ Petter Reinholdtsen ]
+  * Adjusted source URL to upstream home page.
+  * Adjusted d/rules based on the upstream deb package.
+  * Updated Standards-Version from 4.1.1 to 4.1.3.
+
+  [ Felipe Sateler ]
+  * Change maintainer address to debian-multimedia@lists.debian.org
+
+ -- James Cowgill <jcowgill@debian.org>  Sun, 17 Jun 2018 12:52:19 +0100
+
+simplescreenrecorder (0.3.10-3) unstable; urgency=medium
+
+  * Correct cmake flag to disable glinject on non-x86 archs.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Wed, 21 Mar 2018 20:14:05 +0100
+
+simplescreenrecorder (0.3.10-2) unstable; urgency=medium
+
+  * Added cmake as build dependency.
+  * Added 02-appstream-metadata-path.patch to use new path for appstream
+    metadata.
+  * Removed no longer needed dh_auto_install override in d/rules.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Wed, 21 Mar 2018 17:33:43 +0100
+
+simplescreenrecorder (0.3.10-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/copyright: Use https protocol in Format field
+  * d/control: Set Vcs-* to salsa.debian.org
+
+  [ Petter Reinholdtsen ]
+  * New upstream version 0.3.10
+    - Adjusted d/rules for new cmake build system.
+    - Removed 02-qt5_includes.patch, which seem to be no longer needed.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Wed, 21 Mar 2018 15:22:29 +0100
+
+simplescreenrecorder (0.3.8-3) unstable; urgency=medium
+
+  * Team upload.
+  * Use debhelper 10 and dh-autoreconf.
+  * Switch to Qt5. (Closes: #875192)
+    Thanks to Gregor Herrmann for the patch.
+
+  * debian/control:
+    - Use canonical Vcs-Git URL.
+    - Bump standards version to 4.1.1 (no changes).
+  * debian/patches/01-private-glinject.patch:
+    - Install libssr-ginject.so in a private lib directory.
+  * debian/rules:
+    - Don't export build flags manually in debian/rules.
+    - Use DEB_HOST_ARCH_CPU and any-amd64/any-i386 for adding non-x86
+      options. (Closes: #848556, #870514)
+  * debian/source/lintian-overrides:
+    - Remove unused lintian overrides.
+
+ -- James Cowgill <jcowgill@debian.org>  Sun, 26 Nov 2017 12:12:17 +0000
+
+simplescreenrecorder (0.3.8-2) unstable; urgency=low
+
+  * Team upload.
+
+  * Changed to use --disable-x86-asm on non-x86 architectures (Closes: #845108).
+    Patch from John Paul Adrian Glaubitz.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Sat, 17 Dec 2016 09:03:07 +0000
+
+simplescreenrecorder (0.3.8-1) unstable; urgency=low
+
+  * Team upload.
+
+  [ Petter Reinholdtsen ]
+  * Updated to upstream version 0.3.8.
+  * Removed 1001-build-failure-fix.patch now included upstream.
+  * Documented team maintained git repo in Vcs fields in d/control.
+  * Added d/gbp.conf to enforce use of pristine-tar.
+  * Added myself as uploader.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Thu, 15 Dec 2016 17:35:55 +0000
+
+simplescreenrecorder (0.3.6-1) unstable; urgency=medium
+
+  * Team upload.
+  * Initial release. (Closes: #782804, #722249)
+
+  [ Olivier Humbert ]
+  * Changed to use ffmpeg instead of libav.
+  * debian/patches/1001-build-failure-fix.patch:
+    - added following Sebastinas suggestion on #debian-multimedia@oftc.
+    - patch has been included upstream.
+  * debian/changelog :
+    - translate the French parts of the past entries to English.
+  * debian/libsimplescreenrecorder.install
+    - remove this file to fit everything in only one package. See
+      https://github.com/MaartenBaert/ssr/issues/464 .
+  * debian/simplescreenrecorder.install :
+    - removing this file - not needed anymore.
+  * debian/simplescreenrecorder.triggers :
+    - added to fix the "package-must-activate-ldconfig-trigger" error reported
+      by Lintian, following this recommendation:
+      https://lintian.debian.org/tags/package-must-activate-ldconfig-trigger.html.
+  * debian/control :
+    - change the Maintainer field to the debian-multimedia team.
+    - remove package creation for libsimplescreenrecorder.
+    - remove the "Recommends: libsimplescreenrecorder (= ${binary:Version})"
+      since it doesn't exist anymore as an external package but is incorporated
+      to the simplescreenrecorder's one.
+    - remove Jof Thibault since he didn't upload to debian's official repo.
+  * debian/sources/lintian-overrides :
+    - adding this file to relax lintian output's 2 warnings.
+  * debian/rules :
+    - remove the "--disable-ffmpeg-versions" configure option.
+    - removing the *.la files.
+
+  [ Petter Reinholdtsen ]
+  * debian/copyright :
+    - Adjusted based on feedback from 'debmake -k'.
+  * debian/rules :
+    - Made sure .la files are removed after they are installed.
+
+ -- Petter Reinholdtsen <pere@debian.org>  Sun, 13 Nov 2016 06:57:25 +0000
+
+simplescreenrecorder (0.3.6-0librazik3) jessie; urgency=medium
+
+  * Rebuilding with pbuilder for LibraZiK.
+    - package improvements.
+  * debian/control :
+    - description field for "libsimplescreenrecorder" : mention to pulseausio
+      and OSS.
+    - standards-version : 3.9.6 -> 3.9.8 .
+  * debian/copyright :
+    - add licenses for some files.
+
+ -- Olivier Humbert <trebmuh@tuxfamily.org>  Fri, 27 May 2016 01:36:11 +0200
+
+simplescreenrecorder (0.3.6-0librazik2) jessie; urgency=medium
+
+  * Merge with https://github.com/glaubitz/simplescreenrecorder-debian.
+    -> to add when debianization : * Initial release (Closes: #722249).
+  * debian/docs :
+    - using the glaubitz' one.
+  * debian/copyright :
+    - update of Marteen's copyright (+2015+2016).
+    - adding John Paul Adrian Glaubitz.
+    - changes of the "Format:" and "Source:" links.
+  * debian/control :
+    - merging Build-depends with the ones from glaubitz.
+    - "Standards-Version" -> 3.9.4 -> 3.9.6 .
+    - commenting out the Vcs fields.
+    - merging descriptions with glaubitz' ones.
+  * debian/README.source :
+    - copying this file from glaubitz.
+  * debian/rules :
+    - merge with glaubitz' one.
+
+ -- Olivier Humbert <trebmuh@tuxfamily.org>  Tue, 24 May 2016 21:20:02 +0200
+
+simplescreenrecorder (0.3.6-0librazik1) jessie; urgency=medium
+
+  * New upstream version.
+    - test to prepare to enter debian repo.
+  * Rebuild with pbuilder for LibraZiK.
+    - new upstream release.
+  * debian/control :
+    - changing links to LibraZiK documentation in the "description" fields.
+
+ -- Olivier Humbert <trebmuh@tuxfamily.org>  Tue, 24 May 2016 15:21:36 +0200
+
+simplescreenrecorder (0.3.3+20150916~GITe25d6eda0e2-0librazik2) jessie; urgency=medium
+
+  * Rebuild with pbuilder for LibraZiK.
+    - rebuild in 32 and 64 bits.
+  * debian/control :
+    - 2015 -> 2016.
+  * debian/copyright :
+    - adding 2016 next to my name.
+
+ -- Olivier Humbert <trebmuh@tuxfamily.org>  Thu, 17 Mar 2016 00:51:54 +0100
+
+simplescreenrecorder (0.3.3+20150916~GITe25d6eda0e2-0librazik1) jessie; urgency=low
+
+  * Rebuild with pbuilder for LibraZiK.
+  * Removing files (included upstream) :
+    - debian/patches/series
+    - debian/patches/1010-desktop_file_l10n-FR.patch
+  * debian/control :
+    - fixing link address to LibraZiK online documentation.
+    - changes to the build-depends :
+      + changes from libjack-dev to libjack-jackd2-dev.
+      + adds pkg-config and autotools-dev.
+  * debian/watch :
+    - file created.
+  * debian/rules :
+    - adds "--with autotools-dev".
+
+ -- Olivier Humbert <trebmuh@tuxfamily.org>  Wed, 16 Sep 2015 21:02:46 +0200
+
+simplescreenrecorder (0.3.3+GITe2e9336451-0librazik1) jessie; urgency=low
+
+  * New upstream release:
+    - v0.3.2:
+      + Added Qt5 support (optional, Qt4 is still the default)
+      + Added YUV422, YUV444 and RGB support (YUV420 is still the default)
+      + Added pixelformat and sampleformat codec options.
+      + Added benchmark.
+      + Improved RTL support.
+      + Bugfixes
+    - v0.3.3:
+      + Fixed mistake in configure.ac that was causing libssr-glinject.so to
+        be linked with unwanted libraries.
+    - Other adds since v0.3.3:
+      + Add French, Swedish and Traditional Chinese translations.
+      + Use pkg-config to find FFmpeg libraries.
+      + Don't hold the lock while changing JACK connections.
+      + Add man pages.
+      + Add Keywords line to desktop file.
+      + Don't refer to Qt 4 in about box (Qt 5 is supported too).
+      + Fix --disable-x86-asm option.
+  * Rebuild with pbuilder for LibraZiK (based on Debian Jessie).
+  * debian/copyright:
+    - add myself to the debian packaging copyright section.
+    - rewrite this file to improve the machine-readable criteria.
+  * debian/control:
+    - check if the Homepage link is still valid. OK.
+    - add mention to the LibraZiK project in "Description".
+    - lists' style - one item per line.
+    - update "Maintainer" and "Uploaders" Re: "debian-policy 5.6.2 and 5.6.3".
+    - add "libpulse-dev" as a build dependency.
+  * debian/patches/series:
+    - add "desktop_file_l10n-FR.patch" (with dquilt).
+  * debian/patches/desktop_file_l10n-FR.patch:
+    - patch created (with dquilt) to add FR translation.
+  * debian/rules:
+    - enable pulseaudio by removing line 10 "	--disable-pulseaudio \".
+
+ -- Olivier Humbert <trebmuh@tuxfamily.org>  Thu, 07 May 2015 17:29:53 +0200
+
+simplescreenrecorder (0.3.1-0tstudio1) wheezy; urgency=low
+
+  * New upstream release.
+
+ -- Jof Thibaut <tangostudio@tuxfamily.org>  Fri, 03 Oct 2014 18:14:08 +0200
+
+simplescreenrecorder (0.2.2-0tstudio1) wheezy; urgency=low
+
+  * New upstream release.
+
+ -- Jof Thibaut <tangostudio@tuxfamily.org>  Sat, 08 Mar 2014 13:02:41 +0100
+
+simplescreenrecorder (0.2.0-0tstudio1) wheezy; urgency=low
+
+  * Initial release.
+
+ -- Jof Thibaut <tangostudio@tuxfamily.org>  Wed, 19 Feb 2014 12:05:30 +0100

@@ -1,0 +1,9 @@
+0010-plthook.patch
+0020-ffmpeg-7.patch
+1000-Fix-build-with-ffmpeg-5.0.patch
+1010-appstream-metadata-https-category.patch
+1020-ffmpeg-7.patch
+1030-ffmpeg-8.patch
+1040-ffmpeg-9.patch
+2000-private-glinject.patch
+0001-Changed-min-version-to-3.5.patch

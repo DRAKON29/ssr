@@ -1,0 +1,238 @@
+From: =?utf-8?q?Bernhard_Rosenkr=C3=A4nzer?= <bero@lindev.ch>
+Date: Sun, 16 Jan 2022 02:40:04 +0100
+Subject: Fix build with ffmpeg 5.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Forwarded: https://github.com/MaartenBaert/ssr/pull/934
+
+Adapt to ffmpeg 5.0 requiring more const-ness for AVCodec.
+
+Signed-off-by: Bernhard Rosenkränzer <bero@lindev.ch>
+---
+ src/AV/Output/AudioEncoder.cpp |  6 +++---
+ src/AV/Output/AudioEncoder.h   |  4 ++--
+ src/AV/Output/BaseEncoder.cpp  |  4 ++--
+ src/AV/Output/BaseEncoder.h    |  4 ++--
+ src/AV/Output/Muxer.cpp        | 12 ++++++------
+ src/AV/Output/Muxer.h          |  4 ++--
+ src/AV/Output/VideoEncoder.cpp |  6 +++---
+ src/AV/Output/VideoEncoder.h   |  4 ++--
+ 8 files changed, 22 insertions(+), 22 deletions(-)
+
+Index: simplescreenrecorder-salsa/src/AV/Output/AudioEncoder.cpp
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/AudioEncoder.cpp	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/AudioEncoder.cpp	2024-05-08 08:58:34.605059807 +0200
+@@ -34,7 +34,7 @@
+ 
+ const unsigned int AudioEncoder::DEFAULT_FRAME_SAMPLES = 1024;
+ 
+-AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, AVCodec* codec, AVDictionary** options)
++AudioEncoder::AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext *codec_context, const AVCodec* codec, AVDictionary** options)
+ 	: BaseEncoder(muxer, stream, codec_context, codec, options) {
+ 
+ #if !SSR_USE_AVCODEC_ENCODE_AUDIO2
+@@ -81,7 +81,7 @@
+ }
+ 
+ bool AudioEncoder::AVCodecIsSupported(const QString& codec_name) {
+-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
++	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+ 	if(codec == NULL)
+ 		return false;
+ 	if(!av_codec_is_encoder(codec))
+@@ -97,7 +97,7 @@
+ 	return false;
+ }
+ 
+-void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
++void AudioEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+ 								 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
+ 
+ 	if(channels == 0) {
+Index: simplescreenrecorder-salsa/src/AV/Output/AudioEncoder.h
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/AudioEncoder.h	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/AudioEncoder.h	2024-05-08 08:58:34.605059807 +0200
+@@ -40,7 +40,7 @@
+ #endif
+ 
+ public:
+-	AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
++	AudioEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options);
+ 	~AudioEncoder();
+ 
+ 	// Returns the required frame size, i.e. the number of samples (for each channel).
+@@ -57,7 +57,7 @@
+ 
+ public:
+ 	static bool AVCodecIsSupported(const QString& codec_name);
+-	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
++	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+ 							  unsigned int bit_rate, unsigned int channels, unsigned int sample_rate);
+ 
+ private:
+Index: simplescreenrecorder-salsa/src/AV/Output/BaseEncoder.cpp
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/BaseEncoder.cpp	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/BaseEncoder.cpp	2024-05-08 08:58:34.605059807 +0200
+@@ -42,7 +42,7 @@
+ 	return clamp(value_double, min, max) * multiply;
+ }
+ 
+-BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options) {
++BaseEncoder::BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options) {
+ 
+ 	m_muxer = muxer;
+ 	m_stream = stream;
+@@ -157,7 +157,7 @@
+ 	++lock->m_total_packets;
+ }
+ 
+-void BaseEncoder::Init(AVCodec* codec, AVDictionary** options) {
++void BaseEncoder::Init(const AVCodec* codec, AVDictionary** options) {
+ 
+ 	// open codec
+ 	if(avcodec_open2(m_codec_context, codec, options) < 0) {
+Index: simplescreenrecorder-salsa/src/AV/Output/BaseEncoder.h
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/BaseEncoder.h	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/BaseEncoder.h	2024-05-08 08:58:34.605059807 +0200
+@@ -51,7 +51,7 @@
+ 	std::atomic<bool> m_should_stop, m_should_finish, m_is_done, m_error_occurred;
+ 
+ protected:
+-	BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
++	BaseEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options);
+ 
+ public:
+ 	virtual ~BaseEncoder(); // encoders will be deleted by Muxer, don't delete them yourself!
+@@ -117,7 +117,7 @@
+ 	void IncrementPacketCounter();
+ 
+ private:
+-	void Init(AVCodec* codec, AVDictionary** options);
++	void Init(const AVCodec* codec, AVDictionary** options);
+ 	void Free();
+ 
+ 	void EncoderThread();
+Index: simplescreenrecorder-salsa/src/AV/Output/Muxer.cpp
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/Muxer.cpp	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/Muxer.cpp	2024-05-08 08:58:34.605059807 +0200
+@@ -87,7 +87,7 @@
+ 
+ VideoEncoder* Muxer::AddVideoEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+ 									 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate) {
+-	AVCodec *codec = FindCodec(codec_name);
++	const AVCodec *codec = FindCodec(codec_name);
+ 	AVCodecContext *codec_context = NULL;
+ 	AVStream *stream = AddStream(codec, &codec_context);
+ 	VideoEncoder *encoder;
+@@ -111,7 +111,7 @@
+ 
+ AudioEncoder* Muxer::AddAudioEncoder(const QString& codec_name, const std::vector<std::pair<QString, QString> >& codec_options,
+ 									 unsigned int bit_rate, unsigned int channels, unsigned int sample_rate) {
+-	AVCodec *codec = FindCodec(codec_name);
++	const AVCodec *codec = FindCodec(codec_name);
+ 	AVCodecContext *codec_context = NULL;
+ 	AVStream *stream = AddStream(codec, &codec_context);
+ 	AudioEncoder *encoder;
+@@ -194,7 +194,7 @@
+ void Muxer::Init() {
+ 
+ 	// get the format we want (this is just a pointer, we don't have to free this)
+-	AVOutputFormat *format = av_guess_format(m_container_name.toUtf8().constData(), NULL, NULL);
++	auto format = av_guess_format(m_container_name.toUtf8().constData(), NULL, NULL);
+ 	if(format == NULL) {
+ 		Logger::LogError("[Muxer::Init] " + Logger::tr("Error: Can't find chosen output format!"));
+ 		throw LibavException();
+@@ -261,8 +261,8 @@
+ 	}
+ }
+ 
+-AVCodec* Muxer::FindCodec(const QString& codec_name) {
+-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
++const AVCodec* Muxer::FindCodec(const QString& codec_name) {
++	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+ 	if(codec == NULL) {
+ 		Logger::LogError("[Muxer::FindCodec] " + Logger::tr("Error: Can't find codec!"));
+ 		throw LibavException();
+@@ -270,7 +270,7 @@
+ 	return codec;
+ }
+ 
+-AVStream* Muxer::AddStream(AVCodec* codec, AVCodecContext** codec_context) {
++AVStream* Muxer::AddStream(const AVCodec* codec, AVCodecContext** codec_context) {
+ 	assert(!m_started);
+ 	assert(m_format_context->nb_streams < MUXER_MAX_STREAMS);
+ 
+Index: simplescreenrecorder-salsa/src/AV/Output/Muxer.h
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/Muxer.h	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/Muxer.h	2024-05-08 08:58:34.605059807 +0200
+@@ -114,8 +114,8 @@
+ 	void Init();
+ 	void Free();
+ 
+-	AVCodec* FindCodec(const QString& codec_name);
+-	AVStream* AddStream(AVCodec* codec, AVCodecContext** codec_context);
++	const AVCodec* FindCodec(const QString& codec_name);
++	AVStream* AddStream(const AVCodec* codec, AVCodecContext** codec_context);
+ 
+ 	void MuxerThread();
+ 
+Index: simplescreenrecorder-salsa/src/AV/Output/VideoEncoder.cpp
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/VideoEncoder.cpp	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/VideoEncoder.cpp	2024-05-08 08:58:34.605059807 +0200
+@@ -34,7 +34,7 @@
+ 	{"rgb", AV_PIX_FMT_RGB24, false},
+ };
+ 
+-VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options)
++VideoEncoder::VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options)
+ 	: BaseEncoder(muxer, stream, codec_context, codec, options) {
+ 
+ #if !SSR_USE_AVCODEC_ENCODE_VIDEO2
+@@ -95,7 +95,7 @@
+ }
+ 
+ bool VideoEncoder::AVCodecIsSupported(const QString& codec_name) {
+-	AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
++	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name.toUtf8().constData());
+ 	if(codec == NULL)
+ 		return false;
+ 	if(!av_codec_is_encoder(codec))
+@@ -111,7 +111,7 @@
+ 	return false;
+ }
+ 
+-void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
++void VideoEncoder::PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+ 								 unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate) {
+ 
+ 	if(width == 0 || height == 0) {
+Index: simplescreenrecorder-salsa/src/AV/Output/VideoEncoder.h
+===================================================================
+--- simplescreenrecorder-salsa.orig/src/AV/Output/VideoEncoder.h	2024-05-08 08:58:34.613059892 +0200
++++ simplescreenrecorder-salsa/src/AV/Output/VideoEncoder.h	2024-05-08 08:58:34.605059807 +0200
+@@ -40,7 +40,7 @@
+ #endif
+ 
+ public:
+-	VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options);
++	VideoEncoder(Muxer* muxer, AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options);
+ 	~VideoEncoder();
+ 
+ 	// Returns the required pixel format.
+@@ -55,7 +55,7 @@
+ 
+ public:
+ 	static bool AVCodecIsSupported(const QString& codec_name);
+-	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
++	static void PrepareStream(AVStream* stream, AVCodecContext* codec_context, const AVCodec* codec, AVDictionary** options, const std::vector<std::pair<QString, QString> >& codec_options,
+ 							  unsigned int bit_rate, unsigned int width, unsigned int height, unsigned int frame_rate);
+ 
+ private:
