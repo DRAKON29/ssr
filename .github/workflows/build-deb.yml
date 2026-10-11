@@ -1,0 +1,42 @@
+name: Build DEB Package
+
+on:
+  # Позволяет запускать сборку вручную из вкладки Actions
+  workflow_dispatch:
+  # Запускает сборку при создании нового тега (релиза)
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    # Важно: используем Ubuntu, так как сборка deb для Windows не предназначена
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential debhelper dpkg-dev cmake pkg-config \
+            qtbase5-dev qttools5-dev-tools \
+            libavformat-dev libavcodec-dev libavutil-dev libswscale-dev \
+            libasound2-dev libpulse-dev libgl1-mesa-dev libglu1-mesa-dev \
+            libx11-dev libxext-dev libxfixes-dev libxi-dev libxinerama-dev \
+            libv4l-dev libjack-jackd2-dev
+
+      - name: Build Debian package
+        run: |
+          # -us -uc: не подписывать пакет
+          # -b: собрать только бинарный пакет
+          dpkg-buildpackage -us -uc -b
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplescreenrecorder-deb
+          # .deb файлы создаются в родительской директории
+          path: ../*.deb
