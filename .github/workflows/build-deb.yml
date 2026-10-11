@@ -16,7 +16,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+            
+      - name: Switch to Debian archive repositories
+        run: |
+          sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list
+          sed -i 's/security.debian.org/archive.debian.org/g' /etc/apt/sources.list
+          sed -i '/buster-updates/d' /etc/apt/sources.list
+          sed -i '/buster\/updates/d' /etc/apt/sources.list
+      
       - name: Install build dependencies
         run: |
           apt-get update
