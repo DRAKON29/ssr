@@ -15,16 +15,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Switch to Debian archive repositories
+      - name: Configure Debian archive repositories
         run: |
-          sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list
-          sed -i 's/security.debian.org/archive.debian.org/g' /etc/apt/sources.list
-          sed -i '/buster-updates/d' /etc/apt/sources.list
-          sed -i '/buster\/updates/d' /etc/apt/sources.list
+          # Полностью перезаписываем sources.list на архивные репозитории
+          cat > /etc/apt/sources.list <<'EOF'
+          deb http://archive.debian.org/debian/ buster main contrib non-free
+          deb http://archive.debian.org/debian-security buster/updates main contrib non-free
+          EOF
+
+          # Отключаем проверку срока действия репозитория
+          echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 
       - name: Install build dependencies
         run: |
-          apt-get update --allow-releaseinfo-change
+          apt-get update
           apt-get install -y \
             build-essential debhelper dpkg-dev cmake pkg-config \
             qtbase5-dev qttools5-dev qttools5-dev-tools libqt5x11extras5-dev \
